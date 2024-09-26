@@ -13,6 +13,7 @@
 using namespace wasim;
 using namespace smt;
 
+// suggestion: restructure to avoid explicit function recursion
 verilog_expr::VExprAst::VExprAstPtr get_local_max_width(const verilog_expr::VExprAst::VExprAstPtr& node, wasim::SymbolicExecutor& sim, std::vector<int>& width_vec){
     
     verilog_expr::VExprAst::VExprAstPtr new_ast;
@@ -61,6 +62,7 @@ verilog_expr::VExprAst::VExprAstPtr get_local_max_width(const verilog_expr::VExp
     return new_ast;
 }
 
+// rename this function
 verilog_expr::VExprAst::VExprAstPtr check_ast_soft(const verilog_expr::VExprAst::VExprAstPtr& node, wasim::SymbolicExecutor& sim, int& max_width)
 {
     verilog_expr::VExprAst::VExprAstPtr new_ast;
@@ -161,7 +163,7 @@ verilog_expr::VExprAst::VExprAstPtr check_ast(const verilog_expr::VExprAst::VExp
             break;
       }
 
-      default:{
+      default:{  // Do we need to copy the node to new_ast?
             if(node -> get_child_cnt() == 0)
             {
               new_ast = node;
@@ -194,6 +196,8 @@ verilog_expr::VExprAst::VExprAstPtr check_ast(const verilog_expr::VExprAst::VExp
     return new_ast;
 }
 
+// You only need transition system
+// no caching
 smt::Term ast2term(SmtSolver& solver, const verilog_expr::VExprAst::VExprAstPtr& node, wasim::SymbolicExecutor& sim) {
     if (!node) {
         throw std::invalid_argument("Null AST node");
