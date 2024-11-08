@@ -49,7 +49,7 @@ int main() {
     // std::cout << "---------------------------Verilog btor---------------------------" << std::endl;
   
     TransitionSystem sts(solver);
-    BTOR2Encoder btor_parser("../design/idpv-test/div_case/suoglu_div.btor2", sts);
+    BTOR2Encoder btor_parser("design/idpv-test/div_case/suoglu_div.btor2", sts);
     std::cout << "Trans:" << sts.trans()->to_string() << std::endl;
 
     SymbolicSimulator executor(sts,solver);
@@ -114,6 +114,7 @@ int main() {
         auto v_valid = s.interpret_expr_on_curr_state_and_input(sts.lookup("valid"), solver, iv_map);
 
         auto sat_result1 = solver->check_sat_assuming({v_valid});
+        
         if (!sat_result1.is_sat()) {
             std::cout << " (skipped)\n";
             continue;

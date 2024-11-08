@@ -446,7 +446,7 @@ int main()
     solver->assert_formula(res_ast);
     cout << "Checking final result...\n";
     auto final_result = solver->check_sat();
-    std::cout << r.to_string() << std::endl;
+    std::cout << final_result.to_string() << std::endl;
     //count time
     auto end_time = std::chrono::high_resolution_clock::now();
     auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();

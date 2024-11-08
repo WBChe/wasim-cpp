@@ -113,6 +113,7 @@ set(INCLUDE_DIRS
   "${PROJECT_SOURCE_DIR}/contrib/optionparser-1.7/src"
   "${PROJECT_SOURCE_DIR}/deps/btor2tools/src"
   "${PROJECT_SOURCE_DIR}/deps/glog/install/include/"
+  "${PROJECT_SOURCE_DIR}/deps/smt-switch/deps/boolector/src"
   "${SMT_SWITCH_DIR}/local/include"
   "${CMAKE_CURRENT_BINARY_DIR}"
   "${GMP_INCLUDE_DIR}"
@@ -284,14 +285,14 @@ endif()
 # add_executable(testdivuu "apps/idpv/div_uu_test.cpp")
 # target_link_libraries(testdivuu wasim-lib)
 
-# add_executable(testdivcondeq "apps/idpv/div_condeq.cpp")
-# target_link_libraries(testdivcondeq wasim-lib)
+add_executable(testdivcondeq "apps/idpv/div_condeq.cpp")
+target_link_libraries(testdivcondeq wasim-lib)
 
 # add_executable(test_aes "apps/idpv/aes.cpp")
 # target_link_libraries(test_aes wasim-lib)
 
-add_executable(test_ast "apps/idpv/ast-test.cpp")
-target_link_libraries(test_ast wasim-lib)
+# add_executable(test_ast "apps/idpv/ast-test.cpp")
+# target_link_libraries(test_ast wasim-lib)
 
 # add_executable(test_parallel "apps/idpv/parallel-ast.cpp")
 # target_link_libraries(test_parallel wasim-lib)

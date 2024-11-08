@@ -11,6 +11,7 @@
 #include "framework/ts.h"
 #include "smt-switch/boolector_factory.h"
 #include "smt-switch/smtlib_reader.h"
+#include "boolector.h"
 
 using namespace wasim;
 using namespace smt;
@@ -33,7 +34,7 @@ int main() {
     BTOR2Encoder btor_parser("../design/idpv-test/div_case/suoglu_div.btor2", sts);
     std::cout << "Trans:" << sts.trans()->to_string() << std::endl;
 
-    SymbolicExecutor executor(sts,solver);
+    SymbolicSimulator executor(sts,solver);
     assignment_type initdiv = {};
     auto initial_state = executor.convert(initdiv);
     executor.init(initial_state);
@@ -111,6 +112,7 @@ int main() {
         auto v_valid = s.interpret_expr_on_curr_state_and_input(sts.lookup("valid"), solver, iv_map);
         TermVec assumptions({v_valid});
         auto res_ret = solver->check_sat_assuming(assumptions);
+        std::cout << " valid result: " << res_ret << std::endl;
         if (!res_ret.is_sat()) {
             std::cout << " (skipped)" << std::endl;
             continue;
@@ -120,6 +122,29 @@ int main() {
         auto check_ret = solver->make_term(smt::Equal, v_ret, c_ret);
         Term not_equal = solver -> make_term(Not, check_ret);
         assumptions.push_back(not_equal);
+
+        // get conditional term (valid & (v_ret != c_ret))
+        auto conditional_term = solver -> make_term(And, v_valid, not_equal);
+        solver -> assert_formula(conditional_term);
+        auto result_ccec = solver -> check_sat();
+        std::cout << "cec result: " << result_ccec << std::endl;
+        solver -> dump_smt2("cond_cec.smt2");
+        
+        // smt2aiger
+        Btor *btor = boolector_new ();
+        boolector_set_opt (btor, BTOR_OPT_MODEL_GEN, 1);
+        char *error_msg;
+        int status;
+        int result;
+        FILE *fd = fopen ("cond_cec.smt2", "r");
+        FILE *checksat_file = fopen ("checksat_output.txt", "w");
+        FILE *aig_file = fopen ("cond_cec.aig", "w");
+        result = boolector_parse_smt2(btor, fd, "cond_cec.smt2", checksat_file, &error_msg, &status);
+        boolector_dump_aiger_binary(btor, aig_file, false);
+        boolector_delete (btor);
+
+        break;
+
 
         // we are checking (valid |-> v_ret == c_ret) is a valid formula for all the cycles that valid could be 1
         auto t1 = high_resolution_clock::now();
