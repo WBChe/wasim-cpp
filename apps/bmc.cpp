@@ -25,7 +25,7 @@ static Term and_vec(const TermVec & v, SmtSolver & solver) {
     return solver->make_term(true);
   if (v.size() == 1)
     return v.at(0);
-    
+
   auto ret = v.at(0);
   for (size_t idx = 1; idx < v.size() ; ++idx)
     ret = solver->make_term(smt::And, ret, v.at(idx));
@@ -74,6 +74,7 @@ int main(int argc, char ** argv) {
   }
 
   for (unsigned i = 1; i<=bound; ++i) {
+    sim.set_input({},{});
     sim.sim_one_step();
     if (check_prop(
       sim.interpret_state_expr_on_curr_frame(prop, false),
