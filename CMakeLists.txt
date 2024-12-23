@@ -257,6 +257,10 @@ target_link_libraries(test wasim-lib)
 add_executable(test-tac "apps/test-tac.cpp")
 target_link_libraries(test-tac wasim-lib)
 
+
+add_executable(testbmc "apps/bmc.cpp")
+target_link_libraries(testbmc wasim-lib)
+
 # add_executable(independence_check_test "independence_check_test.cpp")
 # target_link_libraries(independence_check_test wasim)
 

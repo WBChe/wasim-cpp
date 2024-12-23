@@ -262,9 +262,9 @@ void SymbolicSimulator::undo_set_input()
 
 /// similar to cur(), but will check no reference to the input variables
 smt::Term SymbolicSimulator::interpret_state_expr_on_curr_frame(
-    const smt::Term & expr) const
+    const smt::Term & expr, bool state_var_only) const
 {
-  if (!_expr_only_sv(expr))
+  if (state_var_only && !_expr_only_sv(expr))
     throw SimulatorException("expr should only contain only state variables");
   const auto & prev_sv = trace_.back();
   return solver_->substitute(expr, prev_sv);
@@ -272,11 +272,11 @@ smt::Term SymbolicSimulator::interpret_state_expr_on_curr_frame(
 
 /// similar to cur(), but will check no reference to the input variables
 smt::TermVec SymbolicSimulator::interpret_state_expr_on_curr_frame(
-    const smt::TermVec & expr_list) const
+    const smt::TermVec & expr_list, bool state_var_only) const
 {
   smt::TermVec ret;
   for (const auto & e : expr_list) {
-    smt::Term e_term = interpret_state_expr_on_curr_frame(e);
+    smt::Term e_term = interpret_state_expr_on_curr_frame(e, state_var_only);
     ret.push_back(std::move(e_term));
   }
   return ret;

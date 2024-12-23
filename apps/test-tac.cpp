@@ -5,6 +5,7 @@
 #include "framework/symsim.h"
 #include "framework/ts.h"
 #include "smt-switch/boolector_factory.h"
+#include "timed-assertion-checker/timed_assertion_checker.h"
 
 using namespace wasim;
 using namespace smt;
@@ -25,6 +26,7 @@ int main() {
   std::cout << sts.trans()->to_string() << std::endl;
   
   /*------------------------------simulation--------------------------------*/
+  SymbolicSimulator sim(sts, solver);
   sim.init();
 
     // timed assertion
