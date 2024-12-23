@@ -16,16 +16,15 @@ public:
         std::string fullname; // "a@2"
         std::string name;     // "a"
         int cycle;            // 2
-        int width;            // get_width
     };
     std::unordered_map<std::string, smt::Term> ass_termmap;
 
     // parse verilog -> ast, parse ast -> get var, max cycle from wasim 
-    TimedAssertionChecker(const std::string verilog_assertion, wasim::TransitionSystem & ts, wasim::SymbolicExecutor& sim, smt::SmtSolver solver) :ts_(ts), sim_(sim), solver_(solver)
+    TimedAssertionChecker(const std::string verilog_assertion, wasim::TransitionSystem & ts, wasim::SymbolicSimulator& sim, smt::SmtSolver solver) :ts_(ts), sim_(sim), solver_(solver)
         {parse_verilog(verilog_assertion); parse_ast(ast); parse_max_cycle();}
 
     //sim and catch var symbolic term
-    void sim_max_step(bool& rst_en0);
+    void sim_max_step(const std::string &rst_sig_name, bool set_rst_to_0, const std::string & clk_sig_name);
 
     //after sim_max_step, print var <-> symbolic map 
     void print_term_map();
@@ -49,14 +48,14 @@ public:
     verilog_expr::VExprAst::VExprAstPtr get_ast() const {return ast;}
 
     //get sim var struct
-    std::vector<Variable> get_var_vec() const {return var_struct_vec;}
+    const std::vector<Variable> & get_var_vec() const {return var_struct_vec;}
 
     //get max sim cycle
     int get_max_cycle() const {return max_cycle;}
 
 protected:
     wasim::TransitionSystem & ts_;
-    wasim::SymbolicExecutor& sim_;
+    wasim::SymbolicSimulator& sim_;
     smt::SmtSolver solver_;
 
 private:
