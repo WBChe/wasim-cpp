@@ -64,6 +64,7 @@ int main(int argc, char ** argv) {
 
   SymbolicSimulator sim(sts, solver);
   sim.init();
+  sim.set_input({},{});
   // check init condition
   if (! check_prop(
     sim.interpret_state_expr_on_curr_frame(prop, false),
@@ -74,8 +75,8 @@ int main(int argc, char ** argv) {
   }
 
   for (unsigned i = 1; i<=bound; ++i) {
-    sim.set_input({},{});
     sim.sim_one_step();
+    sim.set_input({},{});
     if (check_prop(
       sim.interpret_state_expr_on_curr_frame(prop, false),
       sim.all_assumptions(),
